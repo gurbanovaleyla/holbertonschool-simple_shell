@@ -9,10 +9,14 @@
 #include <sys/wait.h>
 #include <sys/stat.h>
 
-/* Function prototypes */
-void run_shell(char **argv);
-char **tokenize(char *line);
-void execute(char **args, char **argv);
-void free_args(char **args);
+extern char **environ;
 
-#endif /* SHELL_H */
+/* Function Prototypes */
+void shell_loop(char *prog_name);
+char **tokenize(char *line);
+int execute(char **args, char *prog_name, int counter);
+void free_args(char **args);
+int _strlen(char *s);
+void print_error(char *prog_name, int counter, char *cmd);
+
+#endif

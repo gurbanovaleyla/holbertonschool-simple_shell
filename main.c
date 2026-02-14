@@ -1,58 +1,53 @@
 #include "shell.h"
 
 /**
- * main - entry point for the simple shell
- * @ac: argument count
- * @av: argument vector
- *
+ * main - Entry point for the shell
+ * @ac: Argument count
+ * @av: Argument vector
  * Return: 0 on success
  */
 int main(int ac, char **av)
 {
 	(void)ac;
-
-	run_shell(av);
+	shell_loop(av[0]);
 	return (0);
 }
 
 /**
- * run_shell - loop that reads and processes commands
- * @argv: argument vector from main
+ * shell_loop - Main shell loop
+ * @prog_name: Name of the program for errors
  */
-void run_shell(char **argv)
+void shell_loop(char *prog_name)
 {
 	char *line = NULL;
 	size_t len = 0;
 	ssize_t nread;
 	char **args;
+	int counter = 0;
 
 	while (1)
 	{
+		counter++;
 		if (isatty(STDIN_FILENO))
 			write(STDOUT_FILENO, "($) ", 4);
 
 		nread = getline(&line, &len, stdin);
-		if (nread == -1) /* Handle EOF (Ctrl+D) */
+		if (nread == -1)
 		{
 			free(line);
-			if (isatty(STDIN_FILENO))
-				write(STDOUT_FILENO, "\n", 1);
-			exit(EXIT_SUCCESS);
+			exit(0);
 		}
 
-		if (line[nread - 1] == '\n')
-			line[nread - 1] = '\0';
-
 		args = tokenize(line);
-		if (args && args[0])
+		if (args[0] != NULL)
 		{
 			if (strcmp(args[0], "exit") == 0)
 			{
-				free_args(args);
 				free(line);
-				exit(EXIT_SUCCESS);
+				free_args(args);
+				exit(0);
 			}
-			execute(args, argv);
+			execute(args, prog_name, counter);
 		}
 		free_args(args);
 	}
