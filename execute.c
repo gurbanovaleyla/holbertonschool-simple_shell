@@ -1,7 +1,7 @@
 #include "shell.h"
 
 /**
- * execute - Executes the command with PATH handling
+ * execute - Executes command and ensures fork isn't called for invalid cmds
  * @args: Tokenized arguments
  * @prog_name: Program name
  * @counter: Execution count
@@ -13,7 +13,7 @@ int execute(char **args, char *prog_name, int counter)
 	int status;
 	char *full_path;
 
-	/* 1. Find the path of the command */
+	/* Check if command exists before forking */
 	full_path = _get_path(args[0]);
 	if (!full_path)
 	{
@@ -21,7 +21,6 @@ int execute(char **args, char *prog_name, int counter)
 		return (1);
 	}
 
-	/* 2. Only fork if the command was found */
 	child_pid = fork();
 	if (child_pid == -1)
 	{
@@ -48,10 +47,7 @@ int execute(char **args, char *prog_name, int counter)
 }
 
 /**
- * print_error - Prints error in specific format
- * @prog_name: Name of shell
- * @counter: Loop count
- * @cmd: Command that failed
+ * print_error - Prints error in specific format to stderr
  */
 void print_error(char *prog_name, int counter, char *cmd)
 {
