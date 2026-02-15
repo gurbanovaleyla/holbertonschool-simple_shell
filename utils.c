@@ -1,36 +1,85 @@
 #include "shell.h"
 
 /**
- * tokenize - Splits a string into an array of tokens (arguments)
- * @line: The string input from the user
- * Return: A null-terminated array of strings
+ * _getenv - Simple getenv implementation
+ * @name: Name of the environment variable
+ * Return: Value of the variable, or NULL
+ */
+char *_getenv(const char *name)
+{
+	int i = 0;
+	size_t len = _strlen((char *)name);
+
+	while (environ[i])
+	{
+		if (strncmp(environ[i], name, len) == 0 && environ[i][len] == '=')
+			return (environ[i] + len + 1);
+		i++;
+	}
+	return (NULL);
+}
+
+/**
+ * _get_path - Finds the full path of a command
+ * @command: The command name (e.g., "ls")
+ * Return: Full path or NULL if not found
+ */
+char *_get_path(char *command)
+{
+	char *path, *path_copy, *token, *file_path;
+	struct stat st;
+
+	/* Check if command is already a full path */
+	if (stat(command, &st) == 0)
+		return (command);
+
+	path = _getenv("PATH");
+	if (!path)
+		return (NULL);
+
+	path_copy = strdup(path);
+	token = strtok(path_copy, ":");
+	while (token)
+	{
+		file_path = malloc(_strlen(token) + _strlen(command) + 2);
+		sprintf(file_path, "%s/%s", token, command);
+		if (stat(file_path, &st) == 0)
+		{
+			free(path_copy);
+			return (file_path);
+		}
+		free(file_path);
+		token = strtok(NULL, ":");
+	}
+	free(path_copy);
+	return (NULL);
+}
+
+/**
+ * tokenize - Splits a string into tokens
  */
 char **tokenize(char *line)
 {
 	char **args;
 	char *token;
 	int i = 0;
-	char *delim = " \t\n\r";
 
-	/* Allocate space for 64 pointers to strings */
 	args = malloc(sizeof(char *) * 64);
 	if (!args)
 		return (NULL);
-
-	token = strtok(line, delim);
+	token = strtok(line, " \t\n\r");
 	while (token)
 	{
-		args[i] = token; /* Store the pointer to the word */
+		args[i] = token;
 		i++;
-		token = strtok(NULL, delim);
+		token = strtok(NULL, " \t\n\r");
 	}
-	args[i] = NULL; /* Null-terminate the array for execve */
+	args[i] = NULL;
 	return (args);
 }
 
 /**
- * free_args - Frees the array of pointers
- * @args: The array to free
+ * free_args - Frees the pointer array
  */
 void free_args(char **args)
 {
@@ -39,17 +88,12 @@ void free_args(char **args)
 }
 
 /**
- * _strlen - Returns the length of a string
- * @s: The string to check
- * Return: Length of string
+ * _strlen - returns length of string
  */
 int _strlen(char *s)
 {
 	int len = 0;
-
-	if (!s)
-		return (0);
-	while (s[len])
-		len++;
+	if (!s) return (0);
+	while (s[len]) len++;
 	return (len);
 }

@@ -19,4 +19,8 @@ void free_args(char **args);
 int _strlen(char *s);
 void print_error(char *prog_name, int counter, char *cmd);
 
+/* PATH handling prototypes */
+char *_get_path(char *command);
+char *_getenv(const char *name);
+
 #endif /* SHELL_H */
