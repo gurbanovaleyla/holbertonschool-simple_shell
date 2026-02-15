@@ -34,19 +34,19 @@ void shell_loop(char *prog_name)
 		nread = getline(&line, &len, stdin);
 		if (nread == -1)
 		{
+			if (isatty(STDIN_FILENO))
+				write(STDOUT_FILENO, "\n", 1);
 			free(line);
 			exit(0);
 		}
 
+		if (line[nread - 1] == '\n')
+			line[nread - 1] = '\0';
+
 		args = tokenize(line);
-		if (args[0] != NULL)
+		/* Only execute if a command was actually entered (not just spaces) */
+		if (args && args[0])
 		{
-			if (strcmp(args[0], "exit") == 0)
-			{
-				free(line);
-				free_args(args);
-				exit(0);
-			}
 			execute(args, prog_name, counter);
 		}
 		free_args(args);

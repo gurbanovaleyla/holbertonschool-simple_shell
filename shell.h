@@ -19,4 +19,4 @@ void free_args(char **args);
 int _strlen(char *s);
 void print_error(char *prog_name, int counter, char *cmd);
 
-#endif
+#endif /* SHELL_H */
