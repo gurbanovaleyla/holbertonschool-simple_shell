@@ -11,13 +11,21 @@
 
 extern char **environ;
 
+/* Core Loop and Execution */
 void shell_loop(char *prog_name);
-char **tokenize(char *line);
 int execute(char **args, char *prog_name, int counter);
+
+/* Helper Functions */
+char **tokenize(char *line);
 void free_args(char **args);
 int _strlen(char *s);
 void print_error(char *prog_name, int counter, char *cmd);
+
+/* PATH and Environment */
 char *_get_path(char *command);
 char *_getenv(const char *name);
 
-#endif
+/* Built-ins */
+int handle_builtin(char **args, char *line);
+
+#endif /* SHELL_H */

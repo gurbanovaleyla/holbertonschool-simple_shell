@@ -1,8 +1,11 @@
 #include "shell.h"
 
 /**
- * execute - Logic for finding and running commands
- * Return: status code (0 for success, 127 for not found)
+ * execute - Forks a process and executes a command
+ * @args: Tokenized command and arguments
+ * @prog_name: Program name for errors
+ * @counter: Command count
+ * Return: Exit status of the command
  */
 int execute(char **args, char *prog_name, int counter)
 {
@@ -25,6 +28,7 @@ int execute(char **args, char *prog_name, int counter)
 			free(full_path);
 		return (1);
 	}
+
 	if (child_pid == 0)
 	{
 		if (execve(full_path, args, environ) == -1)
@@ -39,11 +43,19 @@ int execute(char **args, char *prog_name, int counter)
 		if (WIFEXITED(status))
 			status = WEXITSTATUS(status);
 	}
+
 	if (full_path != args[0])
 		free(full_path);
+
 	return (status);
 }
 
+/**
+ * print_error - Prints formatted error to stderr
+ * @prog_name: Program name
+ * @counter: Line count
+ * @cmd: Failed command
+ */
 void print_error(char *prog_name, int counter, char *cmd)
 {
 	fprintf(stderr, "%s: %d: %s: not found\n", prog_name, counter, cmd);

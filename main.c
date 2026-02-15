@@ -1,10 +1,10 @@
 #include "shell.h"
 
 /**
- * main - Entry point
- * @ac: arg count
- * @av: arg vector
- * Return: 0 or last exit status
+ * main - Entry point for the simple shell
+ * @ac: Argument count (unused)
+ * @av: Argument vector
+ * Return: 0 on success
  */
 int main(int ac, char **av)
 {
@@ -14,8 +14,8 @@ int main(int ac, char **av)
 }
 
 /**
- * shell_loop - Main loop
- * @prog_name: program name
+ * shell_loop - Main shell loop that handles the prompt and input
+ * @prog_name: Name of the program for error reporting
  */
 void shell_loop(char *prog_name)
 {
@@ -30,6 +30,7 @@ void shell_loop(char *prog_name)
 		counter++;
 		if (isatty(STDIN_FILENO))
 			write(STDOUT_FILENO, "($) ", 4);
+
 		nread = getline(&line, &len, stdin);
 		if (nread == -1)
 		{
@@ -38,13 +39,17 @@ void shell_loop(char *prog_name)
 			free(line);
 			exit(status);
 		}
+
 		if (line[nread - 1] == '\n')
 			line[nread - 1] = '\0';
+
 		args = tokenize(line);
 		if (args && args[0])
-			status = execute(args, prog_name, counter);
-		else
-			status = 0;
+		{
+			/* Check for 'exit' before forking */
+			if (handle_builtin(args, line) == -1)
+				status = execute(args, prog_name, counter);
+		}
 		free_args(args);
 	}
 	free(line);

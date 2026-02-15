@@ -1,5 +1,10 @@
 #include "shell.h"
 
+/**
+ * _getenv - Gets an environment variable
+ * @name: Variable name
+ * Return: Value pointer or NULL
+ */
 char *_getenv(const char *name)
 {
 	int i = 0;
@@ -7,6 +12,7 @@ char *_getenv(const char *name)
 
 	if (!environ || !name)
 		return (NULL);
+
 	while (environ[i])
 	{
 		if (strncmp(environ[i], name, len) == 0 && environ[i][len] == '=')
@@ -16,18 +22,26 @@ char *_getenv(const char *name)
 	return (NULL);
 }
 
+/**
+ * _get_path - Locates a command in the PATH
+ * @command: Command to find
+ * Return: Full path or NULL
+ */
 char *_get_path(char *command)
 {
 	char *path, *path_copy, *token, *file_path;
 	struct stat st;
 
-	if (!command) return (NULL);
+	if (!command)
+		return (NULL);
+
 	if (command[0] == '/' || command[0] == '.')
 	{
 		if (stat(command, &st) == 0)
 			return (command);
 		return (NULL);
 	}
+
 	path = _getenv("PATH");
 	if (!path || strlen(path) == 0)
 		return (NULL);
@@ -50,6 +64,9 @@ char *_get_path(char *command)
 	return (NULL);
 }
 
+/**
+ * tokenize - Splits a string into arguments
+ */
 char **tokenize(char *line)
 {
 	char **args;
@@ -57,7 +74,9 @@ char **tokenize(char *line)
 	int i = 0;
 
 	args = malloc(sizeof(char *) * 64);
-	if (!args) return (NULL);
+	if (!args)
+		return (NULL);
+
 	token = strtok(line, " \t\n\r");
 	while (token)
 	{
@@ -69,15 +88,11 @@ char **tokenize(char *line)
 	return (args);
 }
 
+/**
+ * free_args - Frees argument array
+ */
 void free_args(char **args)
 {
-	if (args) free(args);
-}
-
-int _strlen(char *s)
-{
-	int len = 0;
-	if (!s) return (0);
-	while (s[len]) len++;
-	return (len);
+	if (args)
+		free(args);
 }
