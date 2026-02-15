@@ -26,6 +26,6 @@ char *_get_path(char *command);
 char *_getenv(const char *name);
 
 /* Built-ins */
-int handle_builtin(char **args, char *line);
+int handle_builtin(char **args, char *line, int status);
 
 #endif /* SHELL_H */

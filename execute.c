@@ -1,11 +1,8 @@
 #include "shell.h"
 
 /**
- * execute - Forks a process and executes a command
- * @args: Tokenized command and arguments
- * @prog_name: Program name for errors
- * @counter: Command count
- * Return: Exit status of the command
+ * execute - Executes a command
+ * Return: status of the command
  */
 int execute(char **args, char *prog_name, int counter)
 {
@@ -50,12 +47,6 @@ int execute(char **args, char *prog_name, int counter)
 	return (status);
 }
 
-/**
- * print_error - Prints formatted error to stderr
- * @prog_name: Program name
- * @counter: Line count
- * @cmd: Failed command
- */
 void print_error(char *prog_name, int counter, char *cmd)
 {
 	fprintf(stderr, "%s: %d: %s: not found\n", prog_name, counter, cmd);

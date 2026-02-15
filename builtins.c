@@ -1,18 +1,19 @@
 #include "shell.h"
 
 /**
- * handle_builtin - Checks if a command is a built-in
- * @args: Tokenized arguments
- * @line: The original line buffer (to free before exiting)
- * Return: 0 if built-in handled, -1 if not found
+ * handle_builtin - Handles shell built-in commands
+ * @args: Arguments
+ * @line: Line buffer to free
+ * @status: Current exit status of the shell
+ * Return: -1 if not a builtin, otherwise exits
  */
-int handle_builtin(char **args, char *line)
+int handle_builtin(char **args, char *line, int status)
 {
 	if (strcmp(args[0], "exit") == 0)
 	{
 		free(args);
 		free(line);
-		exit(0);
+		exit(status); /* Exit with the last command's status */
 	}
 	return (-1);
 }

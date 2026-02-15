@@ -1,10 +1,10 @@
 #include "shell.h"
 
 /**
- * main - Entry point for the simple shell
- * @ac: Argument count (unused)
- * @av: Argument vector
- * Return: 0 on success
+ * main - Entry point
+ * @ac: Arg count
+ * @av: Arg vector
+ * Return: 0
  */
 int main(int ac, char **av)
 {
@@ -14,8 +14,8 @@ int main(int ac, char **av)
 }
 
 /**
- * shell_loop - Main shell loop that handles the prompt and input
- * @prog_name: Name of the program for error reporting
+ * shell_loop - Main shell loop
+ * @prog_name: Name of program
  */
 void shell_loop(char *prog_name)
 {
@@ -46,8 +46,8 @@ void shell_loop(char *prog_name)
 		args = tokenize(line);
 		if (args && args[0])
 		{
-			/* Check for 'exit' before forking */
-			if (handle_builtin(args, line) == -1)
+			/* Pass current status to handle_builtin */
+			if (handle_builtin(args, line, status) == -1)
 				status = execute(args, prog_name, counter);
 		}
 		free_args(args);
