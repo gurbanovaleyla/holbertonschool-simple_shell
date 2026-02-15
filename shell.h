@@ -11,16 +11,13 @@
 
 extern char **environ;
 
-/* Function Prototypes */
 void shell_loop(char *prog_name);
 char **tokenize(char *line);
 int execute(char **args, char *prog_name, int counter);
 void free_args(char **args);
 int _strlen(char *s);
 void print_error(char *prog_name, int counter, char *cmd);
-
-/* PATH handling prototypes */
 char *_get_path(char *command);
 char *_getenv(const char *name);
 
-#endif /* SHELL_H */
+#endif

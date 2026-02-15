@@ -1,11 +1,8 @@
 #include "shell.h"
 
 /**
- * execute - Executes command and ensures fork isn't called for invalid cmds
- * @args: Tokenized arguments
- * @prog_name: Program name
- * @counter: Execution count
- * Return: 1 on success
+ * execute - Logic for finding and running commands
+ * Return: status code (0 for success, 127 for not found)
  */
 int execute(char **args, char *prog_name, int counter)
 {
@@ -13,12 +10,11 @@ int execute(char **args, char *prog_name, int counter)
 	int status;
 	char *full_path;
 
-	/* Check if command exists before forking */
 	full_path = _get_path(args[0]);
 	if (!full_path)
 	{
 		print_error(prog_name, counter, args[0]);
-		return (1);
+		return (127);
 	}
 
 	child_pid = fork();
@@ -29,26 +25,25 @@ int execute(char **args, char *prog_name, int counter)
 			free(full_path);
 		return (1);
 	}
-
 	if (child_pid == 0)
 	{
 		if (execve(full_path, args, environ) == -1)
 		{
 			perror("Execve Error");
-			exit(127);
+			exit(2);
 		}
 	}
 	else
+	{
 		wait(&status);
-
+		if (WIFEXITED(status))
+			status = WEXITSTATUS(status);
+	}
 	if (full_path != args[0])
 		free(full_path);
-	return (1);
+	return (status);
 }
 
-/**
- * print_error - Prints error in specific format to stderr
- */
 void print_error(char *prog_name, int counter, char *cmd)
 {
 	fprintf(stderr, "%s: %d: %s: not found\n", prog_name, counter, cmd);

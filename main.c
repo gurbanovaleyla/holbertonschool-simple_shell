@@ -1,10 +1,10 @@
 #include "shell.h"
 
 /**
- * main - Entry point for the shell
- * @ac: Argument count
- * @av: Argument vector
- * Return: 0 on success
+ * main - Entry point
+ * @ac: arg count
+ * @av: arg vector
+ * Return: 0 or last exit status
  */
 int main(int ac, char **av)
 {
@@ -14,8 +14,8 @@ int main(int ac, char **av)
 }
 
 /**
- * shell_loop - Main shell loop
- * @prog_name: Name of the program for errors
+ * shell_loop - Main loop
+ * @prog_name: program name
  */
 void shell_loop(char *prog_name)
 {
@@ -23,32 +23,28 @@ void shell_loop(char *prog_name)
 	size_t len = 0;
 	ssize_t nread;
 	char **args;
-	int counter = 0;
+	int counter = 0, status = 0;
 
 	while (1)
 	{
 		counter++;
 		if (isatty(STDIN_FILENO))
 			write(STDOUT_FILENO, "($) ", 4);
-
 		nread = getline(&line, &len, stdin);
 		if (nread == -1)
 		{
 			if (isatty(STDIN_FILENO))
 				write(STDOUT_FILENO, "\n", 1);
 			free(line);
-			exit(0);
+			exit(status);
 		}
-
 		if (line[nread - 1] == '\n')
 			line[nread - 1] = '\0';
-
 		args = tokenize(line);
-		/* Only execute if a command was actually entered (not just spaces) */
 		if (args && args[0])
-		{
-			execute(args, prog_name, counter);
-		}
+			status = execute(args, prog_name, counter);
+		else
+			status = 0;
 		free_args(args);
 	}
 	free(line);

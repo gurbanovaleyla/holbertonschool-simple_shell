@@ -1,15 +1,12 @@
 #include "shell.h"
 
-/**
- * _getenv - Simple getenv implementation
- * @name: Name of the environment variable
- * Return: Value of the variable, or NULL
- */
 char *_getenv(const char *name)
 {
 	int i = 0;
-	size_t len = _strlen((char *)name);
+	size_t len = strlen(name);
 
+	if (!environ || !name)
+		return (NULL);
 	while (environ[i])
 	{
 		if (strncmp(environ[i], name, len) == 0 && environ[i][len] == '=')
@@ -19,29 +16,27 @@ char *_getenv(const char *name)
 	return (NULL);
 }
 
-/**
- * _get_path - Finds the full path of a command
- * @command: The command name (e.g., "ls")
- * Return: Full path or NULL if not found
- */
 char *_get_path(char *command)
 {
 	char *path, *path_copy, *token, *file_path;
 	struct stat st;
 
-	/* Check if command is already a full path */
-	if (stat(command, &st) == 0)
-		return (command);
-
+	if (!command) return (NULL);
+	if (command[0] == '/' || command[0] == '.')
+	{
+		if (stat(command, &st) == 0)
+			return (command);
+		return (NULL);
+	}
 	path = _getenv("PATH");
-	if (!path)
+	if (!path || strlen(path) == 0)
 		return (NULL);
 
 	path_copy = strdup(path);
 	token = strtok(path_copy, ":");
 	while (token)
 	{
-		file_path = malloc(_strlen(token) + _strlen(command) + 2);
+		file_path = malloc(strlen(token) + strlen(command) + 2);
 		sprintf(file_path, "%s/%s", token, command);
 		if (stat(file_path, &st) == 0)
 		{
@@ -55,9 +50,6 @@ char *_get_path(char *command)
 	return (NULL);
 }
 
-/**
- * tokenize - Splits a string into tokens
- */
 char **tokenize(char *line)
 {
 	char **args;
@@ -65,8 +57,7 @@ char **tokenize(char *line)
 	int i = 0;
 
 	args = malloc(sizeof(char *) * 64);
-	if (!args)
-		return (NULL);
+	if (!args) return (NULL);
 	token = strtok(line, " \t\n\r");
 	while (token)
 	{
@@ -78,18 +69,11 @@ char **tokenize(char *line)
 	return (args);
 }
 
-/**
- * free_args - Frees the pointer array
- */
 void free_args(char **args)
 {
-	if (args)
-		free(args);
+	if (args) free(args);
 }
 
-/**
- * _strlen - returns length of string
- */
 int _strlen(char *s)
 {
 	int len = 0;
