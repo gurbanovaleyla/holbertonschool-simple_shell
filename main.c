@@ -2,8 +2,8 @@
 
 /**
  * main - Entry point
- * @ac: Arg count
- * @av: Arg vector
+ * @ac: arg count
+ * @av: arg vector
  * Return: 0
  */
 int main(int ac, char **av)
@@ -14,8 +14,8 @@ int main(int ac, char **av)
 }
 
 /**
- * shell_loop - Main shell loop
- * @prog_name: Name of program
+ * shell_loop - Main loop
+ * @prog_name: program name for errors
  */
 void shell_loop(char *prog_name)
 {
@@ -46,9 +46,10 @@ void shell_loop(char *prog_name)
 		args = tokenize(line);
 		if (args && args[0])
 		{
-			/* Pass current status to handle_builtin */
 			if (handle_builtin(args, line, status) == -1)
 				status = execute(args, prog_name, counter);
+			else
+				status = 0;
 		}
 		free_args(args);
 	}

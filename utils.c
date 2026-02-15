@@ -1,9 +1,7 @@
 #include "shell.h"
 
 /**
- * _getenv - Gets an environment variable
- * @name: Variable name
- * Return: Value pointer or NULL
+ * _getenv - Searches environment variables
  */
 char *_getenv(const char *name)
 {
@@ -23,9 +21,7 @@ char *_getenv(const char *name)
 }
 
 /**
- * _get_path - Locates a command in the PATH
- * @command: Command to find
- * Return: Full path or NULL
+ * _get_path - Finds command in PATH
  */
 char *_get_path(char *command)
 {
@@ -34,18 +30,15 @@ char *_get_path(char *command)
 
 	if (!command)
 		return (NULL);
-
 	if (command[0] == '/' || command[0] == '.')
 	{
 		if (stat(command, &st) == 0)
 			return (command);
 		return (NULL);
 	}
-
 	path = _getenv("PATH");
 	if (!path || strlen(path) == 0)
 		return (NULL);
-
 	path_copy = strdup(path);
 	token = strtok(path_copy, ":");
 	while (token)
@@ -65,7 +58,7 @@ char *_get_path(char *command)
 }
 
 /**
- * tokenize - Splits a string into arguments
+ * tokenize - Splits line into arguments
  */
 char **tokenize(char *line)
 {
@@ -76,7 +69,6 @@ char **tokenize(char *line)
 	args = malloc(sizeof(char *) * 64);
 	if (!args)
 		return (NULL);
-
 	token = strtok(line, " \t\n\r");
 	while (token)
 	{

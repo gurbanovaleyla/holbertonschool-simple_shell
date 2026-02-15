@@ -11,14 +11,11 @@
 
 extern char **environ;
 
-/* Core Loop and Execution */
+/* Function Prototypes */
 void shell_loop(char *prog_name);
-int execute(char **args, char *prog_name, int counter);
-
-/* Helper Functions */
 char **tokenize(char *line);
+int execute(char **args, char *prog_name, int counter);
 void free_args(char **args);
-int _strlen(char *s);
 void print_error(char *prog_name, int counter, char *cmd);
 
 /* PATH and Environment */

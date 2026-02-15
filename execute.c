@@ -1,8 +1,8 @@
 #include "shell.h"
 
 /**
- * execute - Executes a command
- * Return: status of the command
+ * execute - Forks and executes command
+ * Return: Exit status of the command
  */
 int execute(char **args, char *prog_name, int counter)
 {
@@ -43,10 +43,12 @@ int execute(char **args, char *prog_name, int counter)
 
 	if (full_path != args[0])
 		free(full_path);
-
 	return (status);
 }
 
+/**
+ * print_error - Prints error in shell format
+ */
 void print_error(char *prog_name, int counter, char *cmd)
 {
 	fprintf(stderr, "%s: %d: %s: not found\n", prog_name, counter, cmd);
